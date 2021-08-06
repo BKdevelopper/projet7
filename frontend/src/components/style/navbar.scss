@@ -1,0 +1,33 @@
+.container-navbar{
+    height: 100px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid black;
+    &_logo{
+        &_picture{
+            height: 100%;
+            &_img{
+                height: 150px;
+                margin-left: 2em;
+                margin-top: -1.5em;
+            }
+        }
+    }
+    &_iconconnection{
+        list-style: none;
+        padding-top: 0.5em;
+        margin-right: 2em;
+        display: flex;
+        justify-content: space-between;
+        width: 300px;
+        &_li{
+            margin-top: 0.55em;
+            &_link{
+                text-decoration: none;
+                color: black;
+            }
+
+        }
+    }
+}

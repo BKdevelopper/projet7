@@ -1,31 +1,44 @@
 const bcrypt = require('bcrypt')
 const conn = require('../utils/db')
 const jwt = require('jsonwebtoken')
-
-
+//var ls = require('local-storage');
 
 exports.signup = async function(req,res){
+     const email = req.body.email;
     const password = req.body.password;
-    const encryptedPassword = await bcrypt.hash(password, 10)  
+   const encryptedPassword= await bcrypt.hash(password, 10) 
+    const username =  req.body.username;
+    
     var users={
-        "username": req.body.username,
-        "email": req.body.email,
+        "username": username,
+        "email": email,
         "password":encryptedPassword
         }
     try{
-        conn.query('INSERT INTO users SET ?',users, function (error, results, fields) {
+        conn.query('INSERT INTO users SET ?', users,function (error, results, fields) {
             if (error) {
             res.send({
                 "code":400,
                 "failed":"error ocurred"
             })
             } else {
-            res.send({
-                "code":200,
-                "success":"user registered sucessfully"
-                });
+                conn.query('SELECT idUser FROM groupomania.users WHERE email= ?',email, function (error, results, fields) {
+                    if(error){
+                        res.send({
+                            "code":400,
+                            "failed":"error ocurred..."
+                        }) 
+                    }else{
+                        res.status(200).send({
+                            id: results[0].idUser
+                        });
+                    }
+                    
+                })
             }
-    });
+            
+        });
+    
     }catch(err){
         console.log(err)
     }
@@ -42,10 +55,24 @@ exports.getAllUsers = (req, res, next) => {
       }
     )
   }
+  exports.getUsers = (req, res, next) => {
+    const user = req.params.id
+    conn.query(
+      'SELECT idUser, username, isAdmin, des, email FROM groupomania.users WHERE idUser=?',user,
+      function (error, results, fields) {
+        if (error) {
+          return res.status(400).json(error)
+        }
+        return res.status(200).json({ results })
+      }
+    )
+  }
+
 
 exports.login = (req, res) => {
     const user = req.body.username
     const pass = req.body.password
+    
     if (user && pass) {
         conn.query('SELECT * FROM groupomania.users WHERE username= ?',user,
         function (_error, results, _fields) {
@@ -68,10 +95,14 @@ exports.login = (req, res) => {
                 role = 'member'
             }
         
-            var token = jwt.sign({ id: results[0].idUser, roles: role }, process.env.SECRET_KEY, {
+            let token = jwt.sign({ id: results[0].idUser }, process.env.SECRET_KEY, {//id: results[0].idUser, roles: role 
             expiresIn: 86400 // 24 hours
             });
-    
+            //res.cookie('jwt', token, { httpOnly: true, maxAge});
+            
+            //ls.set('jwt', token)
+            //res.ls('jwt', token)
+           
             res.status(200).send({
                 id: results[0].idUser,
                 username: results[0].username,
@@ -80,7 +111,39 @@ exports.login = (req, res) => {
                 accessToken: token
             });
         } 
+      
         )
+    } else{
+        const errors = "erreur...";
+        res.status(400).json({ errors });      
     }
         
 }
+exports.deleteAccount = (req, res, next) => {
+    const user = req.params.id
+   
+    conn.query('DELETE FROM users WHERE idUser=?', user, function (
+      error,
+      results,
+      fields
+    ) {
+      if (error) {
+        return res.status(400).json(error)
+      }
+      return res.status(201).json('Le compte à bien été supprimer')
+    })
+  }
+
+  exports.updateEmail = (req,res,next)=> {
+    const user = req.params.id
+    const email = req.body.email
+    conn.query('UPDATE users SET email=? WHERE idUser=?',
+          [email, user],
+          function (error, results, fields) {
+            if (error) {
+              return res.status(400).json(error)
+            }
+            return res.status(200).json('Votre email a bien été modifié')
+          }
+        )
+  }

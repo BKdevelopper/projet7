@@ -12,7 +12,7 @@ conn.connect(function (err) {
     console.error('error connecting: ' + err.stack)
     return
   }
-  console.log('MySQL connected...')
+  console.log('MySQL connected..')
 })
 
 module.exports = conn

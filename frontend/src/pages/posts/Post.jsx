@@ -9,7 +9,6 @@ const Post = (props) => {
       <p>Post Content</p>
     </div>
   );
-
 };
 
 export default Post;

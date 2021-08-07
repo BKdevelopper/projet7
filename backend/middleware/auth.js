@@ -13,17 +13,19 @@ module.exports = (req, res, next) => {
       next();
     }
   } catch (error) {
-    res.status(401).json({error: error | 'Invalid request!'});
+    res.status(401).json({
+      error: error | 'Invalid request!'
+    });
   }
 };
 // module.exports.requireAuth = (req, res, next) => {
-  
+
 //   try {
 //     const token = req.headers.authorization.split(' ')[1];
 //     console.log(token)
 //     const decodedToken = jwt.verify(token, process.env.SECRET_KEY); // On vérifie le token avec la clé pour lire ce TOKEN
 //     const userId = decodedToken.id;
-    
+
 //     if (req.body.id && req.body.id !== userId) {
 //       throw 'Invalid user ID';
 //     } else {
@@ -79,7 +81,7 @@ module.exports = (req, res, next) => {
 //   } catch (error) {
 //         res.status(401).json({error: error | 'Invalid request!'});
 //    }
-  
+
 // };
 
 // module.exports.requireAuth = (req, res, next) => {
@@ -101,5 +103,5 @@ module.exports = (req, res, next) => {
 //   } catch (error) {
 //     res.status(401).json({error: error | 'Invalid request!'});
 // }
-  
+
 // };

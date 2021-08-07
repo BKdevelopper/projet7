@@ -1,15 +1,17 @@
 import React, {useContext, useEffect, useState} from "react";
 import Auth from "../../context/Auth";
 import { UidContext } from "../../context/UserID";
-import { deleteAccount } from "../../services/AuthApi";
+import { deleteAccount,deleteAllAccount } from "../../services/AuthApi";
 import './style/Account.scss';
 import axios from "axios";
+import { refreshPage } from "../../services/Utils";
 const Account = (props) => {
 
   const { setIsAuthenticated } = useContext(Auth)
   const uid = useContext(UidContext);
   const [user, setUser] = useState([])
   const [AllUser, setAllUser] = useState([])
+ // const [deleteUser, setdeleteUser] = useState([])
   const [emailUser, setEmailUser] = useState("");
   //const [data, setData] = useState(null);
 
@@ -37,6 +39,7 @@ const Account = (props) => {
     }).catch(err => {
      console.log(err)
     });
+    refreshPage()
   }    
 
   const handleDeleteAccount = async (e) => {
@@ -46,8 +49,15 @@ const Account = (props) => {
       setIsAuthenticated(res)
     } catch ({res}) {
       console.log(res);
-    }     
+    }    
+    
   };
+  const handleDeleteAllAccount = (idUser) => {   
+    
+   deleteAllAccount(idUser)
+   //   
+  }
+//onClick={handleDeleteALLAccount(AllUsers.idUser)}
 
   return (
     <>
@@ -76,7 +86,9 @@ const Account = (props) => {
                   <tr>
                        <td>{AllUsers.username}</td>
                        <td>{AllUsers.email}</td>
-                       <td id="icon"><i class="far fa-trash-alt container-post_icon_delete"></i></td>
+                       <td id="icon" value={AllUsers.idUser}>
+                         <i className="far fa-trash-alt container-post_icon_delete" onClick={(e) => handleDeleteAllAccount(AllUsers.idUser)} ></i>
+                       </td>
                   </tr>
              ))}
           </table></div>)

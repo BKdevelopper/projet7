@@ -1,104 +1,98 @@
-.container-register{
-    &_form{
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        background: #fff;
-        width: 285px;
-        margin: -140px 0 0 -182px;
-        padding: 40px;
-        box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
-        &_username{
-            &_texte{
-                
-            }
-            &_input{
-                outline: none;
-                display: block;
-                background: rgba(#000, 0.1);
-                width: 100%;
-                border: 0;
-                border-radius: 4px;
-                box-sizing: border-box;
-                padding: 12px 20px;
-                color: rgba(#000, 0.6);
-                font-family: inherit;
-                font-size: inherit;
-                font-weight: 500;
-                line-height: inherit;
-                transition: 0.3s ease;              
-                &:focus {
-                  color: rgba(#000, 0.8);;
-                }
-            }
+.container-register {
+  &_form {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: #fff;
+    width: 285px;
+    margin: -140px 0 0 -182px;
+    padding: 40px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+    &_username {
+      &_texte {
+      }
+      &_input {
+        outline: none;
+        display: block;
+        background: rgba(#000, 0.1);
+        width: 100%;
+        border: 0;
+        border-radius: 4px;
+        box-sizing: border-box;
+        padding: 12px 20px;
+        color: rgba(#000, 0.6);
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: 500;
+        line-height: inherit;
+        transition: 0.3s ease;
+        &:focus {
+          color: rgba(#000, 0.8);
         }
-        &_email{
-            margin-top: 1em;
-            &_texte{
-                
-            }
-            &_input{
-                outline: none;
-                display: block;
-                background: rgba(#000, 0.1);
-                width: 100%;
-                border: 0;
-                border-radius: 4px;
-                box-sizing: border-box;
-                padding: 12px 20px;
-                color: rgba(#000, 0.6);
-                font-family: inherit;
-                font-size: inherit;
-                font-weight: 500;
-                line-height: inherit;
-                transition: 0.3s ease;              
-                &:focus {
-                  color: rgba(#000, 0.8);;
-                }
-            }
-        }
-        &_password{
-            margin-top: 1em;
-            &_texte{
-                
-            }
-            &_input{
-                outline: none;
-                display: block;
-                background: rgba(#000, 0.1);
-                width: 100%;
-                border: 0;
-                border-radius: 4px;
-                box-sizing: border-box;
-                padding: 12px 20px;
-                color: rgba(#000, 0.6);
-                font-family: inherit;
-                font-size: inherit;
-                font-weight: 500;
-                line-height: inherit;
-                transition: 0.3s ease;
-          
-                &:focus {
-                  color: rgba(#000, 0.8);;
-                }
-            }
-        }
-        &_btn{
-            background: #B9DFFF;
-            color: #fff;
-            border: 1px solid #eee;
-            border-radius: 4px;
-            margin-top: 1em;
-            height: 3em;
-            width: 10em;
-            box-shadow: 5px 5px 5px #eee;
-            text-shadow:none;
-            &:hover{
-                background: #016ABC;
-            }
-        }
-        
-        
+      }
     }
+    &_email {
+      margin-top: 1em;
+      &_texte {
+      }
+      &_input {
+        outline: none;
+        display: block;
+        background: rgba(#000, 0.1);
+        width: 100%;
+        border: 0;
+        border-radius: 4px;
+        box-sizing: border-box;
+        padding: 12px 20px;
+        color: rgba(#000, 0.6);
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: 500;
+        line-height: inherit;
+        transition: 0.3s ease;
+        &:focus {
+          color: rgba(#000, 0.8);
+        }
+      }
+    }
+    &_password {
+      margin-top: 1em;
+      &_texte {
+      }
+      &_input {
+        outline: none;
+        display: block;
+        background: rgba(#000, 0.1);
+        width: 100%;
+        border: 0;
+        border-radius: 4px;
+        box-sizing: border-box;
+        padding: 12px 20px;
+        color: rgba(#000, 0.6);
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: 500;
+        line-height: inherit;
+        transition: 0.3s ease;
 
+        &:focus {
+          color: rgba(#000, 0.8);
+        }
+      }
+    }
+    &_btn {
+      background: #b9dfff;
+      color: #fff;
+      border: 1px solid #eee;
+      border-radius: 4px;
+      margin-top: 1em;
+      height: 3em;
+      width: 10em;
+      box-shadow: 5px 5px 5px #eee;
+      text-shadow: none;
+      &:hover {
+        background: #016abc;
+      }
+    }
+  }
 }

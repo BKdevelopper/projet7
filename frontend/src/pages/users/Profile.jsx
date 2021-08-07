@@ -1,12 +1,8 @@
 import React from "react";
 
-
 const Profile = (props) => {
-
   return (
-    
-   
-      <div className="tab-content">
+    <div className="tab-content">
       <div className="">
         <div className="card border-info mb-3">
           <div className="card-header">Informations</div>
@@ -19,10 +15,7 @@ const Profile = (props) => {
         </div>
       </div>
     </div>
-     
-    
   );
-
 };
 
 export default Profile;

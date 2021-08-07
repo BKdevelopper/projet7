@@ -1,14 +1,14 @@
-import React,{useContext} from "react";
+import React, { useContext } from "react";
 //import axios from "axios";
 //import cookie from "js-cookie";
 import Auth from "../context/Auth";
-import{ logout } from "../services/AuthApi"
+import { logout } from "../services/AuthApi";
 const Logout = () => {
- const {setIsAuthenticated} = useContext(Auth)
+  const { setIsAuthenticated } = useContext(Auth);
 
   const disconnect = () => {
-     logout()
-     setIsAuthenticated(false)   
+    logout();
+    setIsAuthenticated(false);
   };
 
   return (

@@ -35,7 +35,7 @@ function App() {
           <div className="container-fluid">      
             <Navbar />
             <Switch>
-              <Route exact path="/" component={Homepage} />          
+             <Route exact path="/" component={Homepage} />          
               <Route exact path="/register" component={Register} />
               <Route exact path="/login" component={Login} />             
               <AuthenticatedRoute path="/posts" component={Posts} />

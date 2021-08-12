@@ -185,6 +185,12 @@
     }
   }
   &_comment {
+    .pos{
+      float: right;
+      top: -2.5em;
+      position: relative;
+      left: -1em;
+    }
     &_post {
       border: 1px solid #c0c0c0;
       margin-top: 1em;

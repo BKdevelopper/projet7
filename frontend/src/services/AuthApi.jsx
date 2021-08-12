@@ -14,7 +14,7 @@ export function hasAuthenticated() {
 export function login(username, password) {
   return axios({
     method: "post",
-    url: "http://localhost:3000/api/auth/login",
+    url: `${process.env.REACT_APP_URL}/api/auth/login`,
     withCredentials: true,
     data: {
       username,
@@ -30,24 +30,39 @@ export function login(username, password) {
 }
 export function deleteAccount(idUser) {
   return axios
-    .delete(`http://localhost:3000/api/auth/deleteAccount/${idUser}`)
+    .delete(`${process.env.REACT_APP_URL}/api/auth/deleteAccount/${idUser}`)
     .then((res) => {
       removeItem("jwt");
       return false;
     });
 }
-export function deleteAllAccount(idUser) {
-  return axios
-    .delete(`http://localhost:3000/api/auth/deleteAccount/${idUser}`)
-    .then((res) => {
-      return true;
-    });
+export async function deleteAllAccount(idUser) {
+  try {
+    const { data } = await axios.delete(
+      `${process.env.REACT_APP_URL}/api/auth/deleteAccount/${idUser}`
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function updateEmail(id, email) {
+  try {
+    const { data } = await axios.put(
+      `${process.env.REACT_APP_URL}/api/auth/updateEmail/${id}`,
+      email
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export function register(username, email, password) {
   return axios({
     method: "post",
-    url: `http://localhost:3000/api/auth/signup`,
+    url: `${process.env.REACT_APP_URL}/api/auth/signup`,
     data: {
       username,
       email,
@@ -62,7 +77,7 @@ export function register(username, email, password) {
 
 export function tokenIsValid(token) {
   const decodedToken = jwtDecode(token);
-  console.log(decodedToken.id);
+
   if (!decodedToken) {
     return false;
   }

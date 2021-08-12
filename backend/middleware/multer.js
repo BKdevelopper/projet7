@@ -12,10 +12,10 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, callback) => {
     // On va renommer le fichier
-    //console.log(req)
+   
     const name = file.originalname.split(' ').join('_') // Pour éliminer les éventuelles 'white space' du nom d'origine
     const extension = MIME_TYPES[file.mimetype]
-    callback(null, name+ Date.now() + '.' + extension) // création du nom final
+    callback(null, name+ parseInt(Date.now() / 1000000) + '.' + extension) // création du nom final
   }
 })
 

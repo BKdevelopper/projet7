@@ -15,6 +15,5 @@ export const dateParser = (num) => {
 
   return date.toString();
 };
-export function refreshPage() {
-  window.location.reload(false);
-}
+
+

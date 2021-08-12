@@ -1,10 +1,20 @@
 import React, { useContext, useEffect, useState } from "react";
-import { createComment, createPost, deletePost } from "../../services/PostApi";
-// import Auth from "../../context/Auth";
+import {
+  createComment,
+  createPost,
+  deletePost,
+  deleteComment,
+} from "../../services/PostApi";
 import { UidContext } from "../../context/UserID";
 import axios from "axios";
 import "./style/Posts.scss";
-import { dateParser, refreshPage } from "../../services/Utils";
+import { dateParser } from "../../services/Utils";
+
+import {
+  ErreurChampObligatoire,
+  ErreurChampObligatoireComment,
+} from "../../services/Erreur";
+import { getItem } from "../../services/LocalStorage";
 const Posts = (props) => {
   const uid = useContext(UidContext);
   const [message, setMessage] = useState("");
@@ -12,44 +22,121 @@ const Posts = (props) => {
   const [commentaire, setCommentaire] = useState("");
   const [people, setPeople] = useState([]);
   const [comment, setComment] = useState([]);
-  
-  const [file, setFile] = useState([]);
+  const [file, setFile] = useState("");
+  const [user, setUser] = useState([]);
 
-  //console.log(file)
-  const handleDeletePost = (idPosts) => {
-    deletePost(idPosts);
-    refreshPage()
-  };
-  const handlePost = (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    
-    formData.append("file", file);
-    formData.append("uid", uid);
-    formData.append("message", message);
-    createPost(formData);
-    refreshPage()
-  };
-
-  const handleComment = (e) => {
-    e.preventDefault();
-    createComment(commentaire, idPost, uid);
-  };
   useEffect(() => {
-    async function fetchData() {
+    async function fetchData(id) {
       const reqPost = await axios.get(
-        "http://localhost:3000/api/post/getAllPost"
+        `${process.env.REACT_APP_URL}/api/post/getAllPost`,
+        {
+          headers: {
+            Authorization: `Bearer ${getItem("jwt")}`,
+          },
+        }
       );
       setPeople(reqPost.data.results);
 
       const reqComment = await axios.get(
-        "http://localhost:3000/api/post/getAllComment"
+        `${process.env.REACT_APP_URL}/api/post/getAllComment`,
+        {
+          headers: {
+            Authorization: `Bearer ${getItem("jwt")}`,
+          },
+        }
       );
       setComment(reqComment.data.results);
+
+      const reqUser = await axios.get(
+        `${process.env.REACT_APP_URL}/api/auth/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${getItem("jwt")}`,
+          },
+        }
+      );
+      setUser(reqUser.data.results);
     }
 
-    fetchData();
-  }, []);
+    fetchData(uid);
+  }, [uid]);
+
+  const handlePost = async (e) => {
+    e.preventDefault();
+    if (message) {
+      const formData = new FormData();
+
+      formData.append("file", file);
+      formData.append("uid", uid);
+      formData.append("message", message);
+      const idPost = await createPost(formData);
+      setPeople((prevPeople) => [
+        {
+          createdPost: new Date(),
+          idPost,
+          message,
+          picture: file
+            ? `${process.env.REACT_APP_URL}/images/` +
+              file.name +
+              parseInt(Date.now() / 1000000) +
+              "." +
+              file.name.split(".").pop()
+            : "",
+          username: `${user[0].username}`,
+        },
+        ...prevPeople,
+      ]);
+    } else {
+      ErreurChampObligatoire();
+    }
+  };
+
+  const handleDeleteComment = async (idComments) => {
+    await deleteComment(idComments);
+    if (comment.length > 0) {
+      let updatedRows = [...comment];
+
+      let indexToRemove = updatedRows.findIndex(
+        (x) => x.idComment === idComments
+      );
+
+      if (indexToRemove > -1) {
+        updatedRows.splice(indexToRemove, 1);
+        setComment(updatedRows);
+      }
+    }
+  };
+  const handleDeletePost = async (idPosts) => {
+    await deletePost(idPosts);
+    if (people.length > 0) {
+      let updatedRows = [...people];
+
+      let indexToRemove = updatedRows.findIndex((x) => x.idPost === idPosts);
+
+      if (indexToRemove > -1) {
+        updatedRows.splice(indexToRemove, 1);
+        setPeople(updatedRows);
+      }
+    }
+  };
+  const handleComment = async (e) => {
+    e.preventDefault();
+    if (commentaire) {
+      const idComment = await createComment(commentaire, idPost, uid);
+      setComment((prevComment) => [
+        {
+          createComment: idComment,
+          post_idPost: people[0].idPost,
+          text: commentaire,
+          username: `${user[0].username}`,
+          users_idUser: uid,
+        },
+        ...prevComment,
+      ]);
+    } else {
+      ErreurChampObligatoireComment();
+    }
+  };
 
   return (
     <div className="container-postMSG">
@@ -78,7 +165,7 @@ const Posts = (props) => {
             />
           </div>
           <div className="container-postMSG_form_btn">
-            <label for="file" className="container-postMSG_form_btn_label">
+            <label htmlFor="file" className="container-postMSG_form_btn_label">
               Choisir une image
             </label>
             <input
@@ -94,37 +181,41 @@ const Posts = (props) => {
               value="Poster"
             />
           </div>
+          <div id="Erreur-Form"></div>
         </div>
       </form>
 
       {people.map((person) => (
-        <div className="container-post">
-          {}
+        <div className="container-post" key={person.idPost}>
           <div className="container-post_top">
             <div className="container-post_top_username">{person.username}</div>
             <div className="container-post_top_date">
               {dateParser(person.createdPost)}
             </div>
           </div>
-         
+
           <div className="container-post_message">{person.message}</div>
-          {person.picture ==="" ? (null):(
-          <div className="container-post_img">
-             <img
-              src={person.picture}
-              className="container-post_img_cadre"
-              alt="img"
-            />
-            </div>)}
-           
-          
+          {person.picture === "" ? null : (
+            <div className="container-post_img">
+              <img
+                src={person.picture}
+                className="container-post_img_cadre"
+                alt="img"
+              />
+            </div>
+          )}
+
           <div className="container-post_icon">
-            {uid === person.users_idUser ? (
-              <i
-                class="far fa-trash-alt container-post_icon_delete"
-                onClick={(e) => handleDeletePost(person.idPost)}
-              ></i>
-            ) : null}
+            {user.map((personAdmin) =>
+              uid === person.users_idUser ||
+              (uid === personAdmin.idUser && personAdmin.isAdmin === 1) ? (
+                <i
+                  className="far fa-trash-alt container-post_icon_delete"
+                  key={person.idPost}
+                  onClick={(e) => handleDeletePost(person.idPost)}
+                ></i>
+              ) : null
+            )}
           </div>
           <form className="formulaire" onSubmit={handleComment}>
             <div
@@ -149,16 +240,33 @@ const Posts = (props) => {
           <div className="container-post_comment">
             {comment.map((personComment) =>
               personComment.post_idPost === person.idPost ? (
-                <div className="container-post_comment_post">
+                <div
+                  className="container-post_comment_post"
+                  key={person.idPost}
+                >
                   <div className="container-post_comment_post_username">
                     {personComment.username}
                   </div>
                   <div className="container-post_comment_post_texte">
                     {personComment.text}
                   </div>
+                  {user.map((personAdmin) =>
+                    uid === personComment.users_idUser ||
+                    (uid === personAdmin.idUser &&
+                      personAdmin.isAdmin === 1) ? (
+                      <i
+                        className="far fa-trash-alt container-post_icon_delete pos"
+                        key={person.idPost}
+                        onClick={(e) =>
+                          handleDeleteComment(personComment.idComment)
+                        }
+                      ></i>
+                    ) : null
+                  )}
                 </div>
               ) : null
             )}
+            <div id="Erreur-Com"></div>
           </div>
         </div>
       ))}

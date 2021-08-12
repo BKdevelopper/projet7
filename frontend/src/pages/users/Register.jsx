@@ -1,22 +1,38 @@
 import React, { useState } from "react";
-//import axios from "axios";
 import "./style/Register.scss";
 import { register } from "../../services/AuthApi";
 import { useHistory } from "react-router-dom";
+import {
+  ErreurChampObligatoire,
+  ErreurPassword,
+  ErreurEmail,
+} from "../../services/Erreur";
 
 const Register = (props) => {
   const history = useHistory();
-
-  //const [formSubmit, setFormSubmit] = useState(false);
+  let errReg = document.getElementById("Erreur-Form");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleRegister = (e) => {
     e.preventDefault();
-    const response = register(username, email, password);
-    if (response) {
-      history.replace("/login");
+    if (username && email && password) {
+      if (ErreurEmail(email)) {
+        if (ErreurPassword(password)) {
+          const response = register(username, email, password);
+          response.then((valeur) => {
+            if(valeur === true ){
+              history.push("/login");
+            }
+            else{
+              errReg.innerHTML = "Username ou mail déjà utilisé";
+            }
+            })
+        }
+      }
+    } else {
+      ErreurChampObligatoire();
     }
   };
 
@@ -79,6 +95,7 @@ const Register = (props) => {
             className="container-register_form_btn"
             value="S'enregistrer"
           />
+          <div id="Erreur-Form"></div>
         </div>
       </form>
     </div>

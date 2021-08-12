@@ -3,22 +3,31 @@ import "./style/Login.scss";
 import { NavLink, useHistory } from "react-router-dom";
 import Auth from "../../context/Auth";
 import { login } from "../../services/AuthApi";
+import { ErreurChampObligatoire, ErreurPassword } from "../../services/Erreur";
 
 const Login = (props) => {
-  //http://localhost:3000/api/auth/login
   const { isAuthenticated, setIsAuthenticated } = useContext(Auth);
   const history = useHistory();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  let errLog = document.getElementById("Erreur-Form");
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await login(username, password);
-      // const idresponse = await idlogin(username,password)
-      setIsAuthenticated(response);
-      // uid(idresponse)
-      history.replace("/posts");
+      if (username && password) {
+        if (ErreurPassword(password)) {
+          const response = await login(username, password);
+          if (response) {
+            setIsAuthenticated(response);
+            history.replace("/posts");
+          } else {
+            errLog.innerHTML = "Username ou mot de passe incorrect";
+          }
+        }
+      } else {
+        ErreurChampObligatoire();
+      }
     } catch ({ response }) {
       console.log(response);
     }
@@ -80,6 +89,7 @@ const Login = (props) => {
               Inscription
             </NavLink>
           </div>
+          <div id="Erreur-Form"></div>
         </div>
       </form>
     </div>

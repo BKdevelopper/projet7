@@ -1,12 +1,13 @@
 const conn = require('../utils/db')
 const fs = require('fs');
+
 exports.createPost = (req, res, next) => {
-  //console.log(req.file)
+ 
   const msg = req.body.message
   const user = req.body.uid
   const picture = req.file ?
     `${req.protocol}://${req.get('host')}/images/${req.file.filename}` :
-    "" //req.files[0].originalname
+    "" 
   var post = {
     "message": msg,
     "users_idUser": user,
@@ -21,7 +22,9 @@ exports.createPost = (req, res, next) => {
     if (error) {
       return res.status(400).json(error)
     }
-    return res.status(201).json('Votre post à bien été crée')
+    
+
+    return res.status(201).json(results.insertId)
   })
 }
 
@@ -43,7 +46,7 @@ exports.createComment = (req, res, next) => {
     if (error) {
       return res.status(400).json(error)
     }
-    return res.status(201).json('Votre commentaire à bien été crée')
+    return res.status(201).json(results.insertId)
   })
 }
 
@@ -58,20 +61,14 @@ exports.deletePost = (req, res, next) => {
     if (error) {
       return res.status(400).json(error)
     }
-    return res.status(201).json('Le post à bien été supprimer')
+    return res.status(201).json(results.affectedRows)
   })
 }
-exports.createLike = (req, res, next) => {
-  const like = req.body.likes
-  const user = req.body.users_idUser
-  const post = req.body.post_idPost
-  var likePost = {
-    "likes": like,
-    "users_idUser": user,
-    "post_idPost": post
-  }
 
-  conn.query('INSERT INTO likes SET ?', likePost, function (
+exports.deleteComment = (req, res, next) => {
+  const comment = req.params.id
+
+  conn.query('DELETE FROM comment WHERE idComment=?', comment, function (
     error,
     results,
     fields
@@ -79,9 +76,11 @@ exports.createLike = (req, res, next) => {
     if (error) {
       return res.status(400).json(error)
     }
-    return res.status(201).json('Votre like à bien été crée')
+    return res.status(201).json(results.affectedRows)
   })
 }
+
+
 
 exports.getAllPost = (req, res, next) => {
 
@@ -100,7 +99,7 @@ exports.getAllPost = (req, res, next) => {
 }
 exports.getAllComment = (req, res, next) => {
 
-  conn.query('SELECT comment.idComment, comment.post_idPost, comment.text, users.username FROM comment,post,users WHERE post.idPost=comment.post_idPost && comment.users_idUser=users.idUser', function (
+  conn.query('SELECT comment.idComment, comment.users_idUser, comment.post_idPost, comment.text, users.username FROM comment,post,users WHERE post.idPost=comment.post_idPost && comment.users_idUser=users.idUser', function (
     error,
     results,
     fields
@@ -114,45 +113,4 @@ exports.getAllComment = (req, res, next) => {
   })
 }
 
-exports.getPostByID = (req, res, next) => {
 
-  conn.query('SELECT post.message, users.username FROM users,post WHERE post.users_idUser && users.idUser =?', req.body.users_idUser, function (
-    error,
-    results,
-    fields
-  ) {
-    if (error) {
-      return res.status(400).json(error)
-    }
-    return res.status(201).json({
-      results
-    })
-  })
-}
-
-exports.updatePost = (req, res, next) => {
-  conn.query(
-    'SELECT * FROM post WHERE idPost=?',
-    req.params.id,
-    function (error, results, fields) {
-      if (error) {
-        return res.status(400).json(error)
-      }
-      const msg = req.body.message
-      const user = req.body.users_idUser
-      var post = {
-        "message": msg,
-        "users_idUser": user
-      }
-      conn.query('UPDATE post SET ? WHERE idPost=?',
-        [post, req.params.id],
-        function (error, results, fields) {
-          if (error) {
-            return res.status(400).json(error)
-          }
-          return res.status(200).json('Votre message a bien été modifié')
-        }
-      )
-    }
-  )
-}

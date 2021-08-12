@@ -60,6 +60,7 @@ const Posts = (props) => {
 
     fetchData(uid);
   }, [uid]);
+  
 
   const handlePost = async (e) => {
     e.preventDefault();
@@ -137,7 +138,6 @@ const Posts = (props) => {
       ErreurChampObligatoireComment();
     }
   };
-
   return (
     <div className="container-postMSG">
       <div className="container-postMSG_logo">

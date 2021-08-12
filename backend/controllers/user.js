@@ -61,7 +61,7 @@ exports.signup = async function (req, res) {
 
 exports.getAllUsers = (req, res, next) => {
   conn.query(
-    'SELECT idUser, username, isAdmin, des, email FROM users',
+    'SELECT idUser, username, isAdmin, email FROM users',
     function (error, results, fields) {
       if (error) {
         return res.status(400).json(error)
@@ -75,7 +75,7 @@ exports.getAllUsers = (req, res, next) => {
 exports.getUsers = (req, res, next) => {
   const user = req.params.id
   conn.query(
-    'SELECT idUser, username, isAdmin, des, email FROM users WHERE idUser=?', user,
+    'SELECT idUser, username, isAdmin, email FROM users WHERE idUser=?', user,
     function (error, results, fields) {
       if (error) {
         return res.status(400).json(error)

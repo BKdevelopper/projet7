@@ -29,7 +29,7 @@ exports.signup = async function (req, res) {
         if (error) {
           res.status(400).json(error)
         } else {
-          conn.query('SELECT idUser FROM groupomania.users WHERE email= ?', email, function (error, results, fields) {
+          conn.query('SELECT idUser FROM users WHERE email= ?', email, function (error, results, fields) {
             if (error) {
               res.send({
                 "code": 400,
@@ -61,7 +61,7 @@ exports.signup = async function (req, res) {
 
 exports.getAllUsers = (req, res, next) => {
   conn.query(
-    'SELECT idUser, username, isAdmin, des, email FROM groupomania.users',
+    'SELECT idUser, username, isAdmin, des, email FROM users',
     function (error, results, fields) {
       if (error) {
         return res.status(400).json(error)
@@ -75,7 +75,7 @@ exports.getAllUsers = (req, res, next) => {
 exports.getUsers = (req, res, next) => {
   const user = req.params.id
   conn.query(
-    'SELECT idUser, username, isAdmin, des, email FROM groupomania.users WHERE idUser=?', user,
+    'SELECT idUser, username, isAdmin, des, email FROM users WHERE idUser=?', user,
     function (error, results, fields) {
       if (error) {
         return res.status(400).json(error)
@@ -93,7 +93,7 @@ exports.login = (req, res) => {
   const pass = req.body.password
 
   if (user && pass) {
-    conn.query('SELECT * FROM groupomania.users WHERE username= ?', user,
+    conn.query('SELECT * FROM users WHERE username= ?', user,
       function (_error, results, _fields) {
         var passwordIsValid = bcrypt.compare(
           req.body.password,

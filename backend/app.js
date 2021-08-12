@@ -1,7 +1,6 @@
 const express = require('express')
 const dotenv = require('dotenv').config();
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
 const userRoutes = require('./routes/user');
 const postRoutes = require('./routes/post');
 const path = require('path')
@@ -17,7 +16,6 @@ app.use((req, res, next) => {
 });
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieParser());
 app.use(helmet());
 app.use('/images', express.static(path.join(__dirname, 'images')))
 app.use('/api/post', postRoutes);

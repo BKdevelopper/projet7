@@ -181,7 +181,7 @@ const Posts = (props) => {
               value="Poster"
             />
           </div>
-          <div id="Erreur-Form"></div>
+          <div id="Erreur-Form" ></div>
         </div>
       </form>
 

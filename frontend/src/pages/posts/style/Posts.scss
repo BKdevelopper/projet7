@@ -5,9 +5,17 @@
     margin: auto;
     justify-content: center;
     display: flex;
+    
+    @media all and (max-width: 1024px) {
+      width: 100%;
+    }
     &_img {
       height: 221px;
       width: 30%;
+     
+      @media all and (max-width: 1024px) {
+        width: 48%;
+      }
     }
   }
   &_form {
@@ -18,6 +26,9 @@
     border: 1px solid #c0c0c0;
     border-radius: 10px;
     box-shadow: 3px 3px 6px 0 #a9a9a9;
+    @media all and (max-width: 1024px) {
+      width: 95%;
+    }
     &_message {
       &_texte {
       }
@@ -32,6 +43,9 @@
         letter-spacing: 1px;
         margin-left: 1em;
         margin-top: 1em;
+        @media all and (max-width: 1024px) {
+          width: 89%;
+        }
       }
     }
     &_btn {
@@ -81,6 +95,10 @@
   border: 1px solid #c0c0c0;
   border-radius: 10px;
   box-shadow: 3px 3px 6px 0 #a9a9a9;
+  @media all and (max-width: 1024px) {
+    width: 95%;
+    
+  }
   &_top {
     display: flex;
     align-items: center;
@@ -165,7 +183,10 @@
       box-shadow: 1px 1px 1px #999;
       font-size: 0.8rem;
       letter-spacing: 1px;
-
+      @media all and (max-width: 1024px) {
+        margin-left:1.8em;
+      
+      }
       //margin-top: 1em;
     }
     &_btn {
@@ -181,6 +202,11 @@
       text-shadow: none;
       &:hover {
         background: #016abc;
+      }
+      @media all and (max-width: 1024px) {
+       
+        height: 67px;
+        width: 32%;
       }
     }
   }
@@ -215,4 +241,7 @@
       }
     }
   }
+}
+#Erreur-Form{
+  margin-bottom: 1em;
 }

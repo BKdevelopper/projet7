@@ -7,18 +7,24 @@ export function ErreurEmail(Email) {
     return true;
   } else {
     mailRegister.innerHTML = "Le format du mail est incorrect";
+    mailRegister.style.color ="red";
+    mailRegister.style.textAlign="center"
     return false;
   }
 }
 
 export function ErreurChampObligatoire() {
   let formMsg = document.getElementById("Erreur-Form");
-  formMsg.innerHTML = "Merci de remplir correctement les champs";
+  formMsg.innerHTML = "Merci de remplir correctement tous les champs";
+  formMsg.style.color ="red";
+  formMsg.style.textAlign="center"
 }
 
 export function ErreurChampObligatoireComment() {
   let formMsg = document.getElementById("Erreur-Com");
-  formMsg.innerHTML = "Merci de remplir correctement les champs";
+  formMsg.innerHTML = "Merci de remplir correctement tous les champs";
+  formMsg.style.color ="red";
+  formMsg.style.textAlign="center"
 }
 
 export function ErreurPassword(Password) {
@@ -30,7 +36,8 @@ export function ErreurPassword(Password) {
     return true;
   } else {
     password.innerHTML = "Mots de passe incorrect";
-
+    password.style.color ="red";
+    password.style.textAlign="center"
     return false;
   }
 }

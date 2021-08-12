@@ -23,6 +23,9 @@ const Login = (props) => {
             history.replace("/posts");
           } else {
             errLog.innerHTML = "Username ou mot de passe incorrect";
+            errLog.style.color ="red"
+            errLog.style.textAlign="center"
+
           }
         }
       } else {

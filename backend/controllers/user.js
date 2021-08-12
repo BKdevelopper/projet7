@@ -95,7 +95,7 @@ exports.login = (req, res) => {
   if (user && pass) {
     conn.query('SELECT * FROM users WHERE username= ?', user,
       function (_error, results, _fields) {
-        var passwordIsValid = bcrypt.compare(
+        var passwordIsValid = bcrypt.compareSync(
           req.body.password,
           results[0].password
         );

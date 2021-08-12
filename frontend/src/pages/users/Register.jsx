@@ -27,6 +27,8 @@ const Register = (props) => {
             }
             else{
               errReg.innerHTML = "Username ou mail déjà utilisé";
+              errReg.style.color ="red";
+              errReg.style.textAlign="center";
             }
             })
         }

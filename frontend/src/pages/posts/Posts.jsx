@@ -25,42 +25,25 @@ const Posts = (props) => {
   const [file, setFile] = useState("");
   const [user, setUser] = useState([]);
 
-  useEffect(() => {
-    async function fetchData(id) {
-      const reqPost = await axios.get(
-        `${process.env.REACT_APP_URL}/api/post/getAllPost`,
-        {
-          headers: {
-            Authorization: `Bearer ${getItem("jwt")}`,
-          },
-        }
-      );
-      setPeople(reqPost.data.results);
 
-      const reqComment = await axios.get(
-        `${process.env.REACT_APP_URL}/api/post/getAllComment`,
+  const handleComment = async (e) => {
+    e.preventDefault();
+    if (commentaire) {
+      const idcomment = await createComment(commentaire, idPost, uid);
+      setComment((prevComment) => [
         {
-          headers: {
-            Authorization: `Bearer ${getItem("jwt")}`,
-          },
-        }
-      );
-      setComment(reqComment.data.results);
-
-      const reqUser = await axios.get(
-        `${process.env.REACT_APP_URL}/api/auth/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${getItem("jwt")}`,
-          },
-        }
-      );
-      setUser(reqUser.data.results);
+          idComment: idcomment,
+          post_idPost: idPost,
+          text: commentaire,
+          username: `${user[0].username}`,
+          users_idUser: uid,
+        },
+        ...prevComment,
+      ]);
+    } else {
+      ErreurChampObligatoireComment();
     }
-
-    fetchData(uid);
-  }, [uid]);
-  
+  };
 
   const handlePost = async (e) => {
     e.preventDefault();
@@ -120,26 +103,50 @@ const Posts = (props) => {
       }
     }
   };
-  const handleComment = async (e) => {
-    e.preventDefault();
-    if (commentaire) {
-      const idComment = await createComment(commentaire, idPost, uid);
-      setComment((prevComment) => [
+
+  useEffect(() => {
+   
+    async function fetchData() {
+      const reqUser = await axios.get(
+        `${process.env.REACT_APP_URL}/api/auth/${uid}`,
         {
-          createComment: idComment,
-          post_idPost: people[0].idPost,
-          text: commentaire,
-          username: `${user[0].username}`,
-          users_idUser: uid,
-        },
-        ...prevComment,
-      ]);
-    } else {
-      ErreurChampObligatoireComment();
+          headers: {
+            Authorization: `Bearer ${getItem("jwt")}`,
+          },
+        }
+      );
+      setUser(reqUser.data.results);
+      const reqPost = await axios.get(
+        `${process.env.REACT_APP_URL}/api/post/getAllPost`,
+        {
+          headers: {
+            Authorization: `Bearer ${getItem("jwt")}`,
+          },
+        }
+      );
+      setPeople(reqPost.data.results);
+
+      const reqComment = await axios.get(
+        `${process.env.REACT_APP_URL}/api/post/getAllComment`,
+        {
+          headers: {
+            Authorization: `Bearer ${getItem("jwt")}`,
+          },
+        }
+      );
+      setComment(reqComment.data.results);
+      
+      
     }
-  };
+
+    fetchData();
+  }, [uid]);
+
+ 
   return (
+    
     <div className="container-postMSG">
+      
       <div className="container-postMSG_logo">
         <img
           className="container-postMSG_logo_img"
@@ -184,7 +191,7 @@ const Posts = (props) => {
           <div id="Erreur-Form" ></div>
         </div>
       </form>
-
+    
       {people.map((person) => (
         <div className="container-post" key={person.idPost}>
           <div className="container-post_top">
@@ -206,7 +213,7 @@ const Posts = (props) => {
           )}
 
           <div className="container-post_icon">
-            {user.map((personAdmin) =>
+          {user.map((personAdmin) => 
               uid === person.users_idUser ||
               (uid === personAdmin.idUser && personAdmin.isAdmin === 1) ? (
                 <i
@@ -215,13 +222,12 @@ const Posts = (props) => {
                   onClick={(e) => handleDeletePost(person.idPost)}
                 ></i>
               ) : null
-            )}
+              )}
           </div>
-          <form className="formulaire" onSubmit={handleComment}>
+          <form className="formulaire" onSubmit={handleComment} >
             <div
               className="container-post_commentaire"
-              onChange={(e) => setIdPost(person.idPost)}
-            >
+              onChange={(e) => setIdPost(person.idPost)}>
               <textarea
                 type="text"
                 className="container-post_commentaire_text"
@@ -242,7 +248,7 @@ const Posts = (props) => {
               personComment.post_idPost === person.idPost ? (
                 <div
                   className="container-post_comment_post"
-                  key={person.idPost}
+                 key={personComment.idComment}
                 >
                   <div className="container-post_comment_post_username">
                     {personComment.username}
@@ -256,7 +262,7 @@ const Posts = (props) => {
                       personAdmin.isAdmin === 1) ? (
                       <i
                         className="far fa-trash-alt container-post_icon_delete pos"
-                        key={person.idPost}
+                        key={personComment.idComment}
                         onClick={(e) =>
                           handleDeleteComment(personComment.idComment)
                         }

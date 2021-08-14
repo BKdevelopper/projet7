@@ -9,7 +9,7 @@ import { UidContext } from "../../context/UserID";
 import axios from "axios";
 import "./style/Posts.scss";
 import { dateParser } from "../../services/Utils";
-
+import Comment from "../../components/Comment";
 import {
   ErreurChampObligatoire,
   ErreurChampObligatoireComment,
@@ -18,17 +18,17 @@ import { getItem } from "../../services/LocalStorage";
 const Posts = (props) => {
   const uid = useContext(UidContext);
   const [message, setMessage] = useState("");
-  const [idPost, setIdPost] = useState("");
-  const [commentaire, setCommentaire] = useState("");
+  // const [idPost, setIdPost] = useState("");
+  // const [commentaire, setCommentaire] = useState("");
   const [people, setPeople] = useState([]);
   const [comment, setComment] = useState([]);
   const [file, setFile] = useState("");
   const [user, setUser] = useState([]);
 
 
-  const handleComment = async (e) => {
-    e.preventDefault();
-    if (commentaire) {
+  const handleComment = async (idPost, commentaire) => {
+    //e.preventDefault();
+    if (commentaire && user[0]) {
       const idcomment = await createComment(commentaire, idPost, uid);
       setComment((prevComment) => [
         {
@@ -47,7 +47,7 @@ const Posts = (props) => {
 
   const handlePost = async (e) => {
     e.preventDefault();
-    if (message) {
+    if (message && user[0]) {
       const formData = new FormData();
 
       formData.append("file", file);
@@ -105,7 +105,8 @@ const Posts = (props) => {
   };
 
   useEffect(() => {
-   
+   console.log({uid})
+   if(uid){
     async function fetchData() {
       const reqUser = await axios.get(
         `${process.env.REACT_APP_URL}/api/auth/${uid}`,
@@ -115,6 +116,7 @@ const Posts = (props) => {
           },
         }
       );
+      console.log(reqUser.data.results)
       setUser(reqUser.data.results);
       const reqPost = await axios.get(
         `${process.env.REACT_APP_URL}/api/post/getAllPost`,
@@ -138,8 +140,10 @@ const Posts = (props) => {
       
       
     }
-
     fetchData();
+   }
+    
+    
   }, [uid]);
 
  
@@ -224,7 +228,7 @@ const Posts = (props) => {
               ) : null
               )}
           </div>
-          <form className="formulaire" onSubmit={handleComment} >
+          {/* <form className="formulaire" onSubmit={handleComment} >
             <div
               className="container-post_commentaire"
               onChange={(e) => setIdPost(person.idPost)}>
@@ -242,7 +246,8 @@ const Posts = (props) => {
                 value="Envoyer"
               />
             </div>
-          </form>
+          </form> */}
+          <Comment onComment={commentaire => handleComment(person.idPost, commentaire)}/>
           <div className="container-post_comment">
             {comment.map((personComment) =>
               personComment.post_idPost === person.idPost ? (

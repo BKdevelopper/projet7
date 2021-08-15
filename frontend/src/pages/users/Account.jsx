@@ -102,24 +102,20 @@ const Account = (props) => {
 
           {person.isAdmin === 1 ? (
             <div className="container-accountAdmin">
-              <table>
+              <table className="container-accountAdmin_events-table">
+                <thead>
+                  <tr>
+                    <th className="container-accountAdmin_events-table_Username">Username</th>
+                    <th className="container-accountAdmin_events-table_Email">Email</th>
+                    <th className="container-accountAdmin_events-table_Suppression">Suppression</th>
+                  </tr>                  
+                </thead>
                 <tbody>
-                <tr>
-                  <td>
-                    <b>Username</b>
-                  </td>
-                  <td>
-                    <b>Email</b>
-                  </td>
-                  <td>
-                    <b>Suppression</b>
-                  </td>
-                </tr>
                 {AllUser.map((AllUsers) => (
                   <tr key={AllUsers.idUser}>
-                    <td>{AllUsers.username}</td>
-                    <td>{AllUsers.email}</td>
-                    <td id="icon" value={AllUsers.idUser}>
+                    <td data-label="Username">{AllUsers.username}</td>
+                    <td data-label="Email">{AllUsers.email}</td>
+                    <td data-label="Suppression" id="icon" value={AllUsers.idUser}>
                       <i
                         className="far fa-trash-alt container-post_icon_delete"
                         onClick={(e) => handleDeleteAllAccount(AllUsers.idUser)}
@@ -127,7 +123,7 @@ const Account = (props) => {
                     </td>
                   </tr>
                 ))}
-                </tbody>
+               </tbody>
               </table>
             </div>
           ) : null}

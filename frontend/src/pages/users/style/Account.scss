@@ -104,5 +104,30 @@
   }
   #icon {
     text-align: center;
+    @media (max-width: 1585px){ 
+      text-align: right;
+    }
+
+  }
+  &_events-table{
+    @media (max-width: 1585px){ 
+    thead{
+      display: none;
+    }
+    tr{
+      display: block;
+      margin-bottom: 40px;
+    }
+    td{
+      display: block;
+      text-align: right;
+      &:before{
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+      }
+    }
+  }
+
   }
 }

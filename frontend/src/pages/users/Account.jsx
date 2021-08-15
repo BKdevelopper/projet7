@@ -7,6 +7,7 @@ import axios from "axios";
 import { ErreurChampObligatoire, ErreurEmail } from "../../services/Erreur";
 import { updateEmail } from "../../services/AuthApi";
 const Account = (props) => {
+  let errLog = document.getElementById("Erreur-Form");
   const { setIsAuthenticated } = useContext(Auth);
   const uid = useContext(UidContext);
   const [user, setUser] = useState([]);
@@ -30,8 +31,15 @@ const Account = (props) => {
         const dataEmail = {
           email: emailUser,
         };
-        await updateEmail(uid,dataEmail);
-        setUser([{email : emailUser ,idUser : uid,isAdmin : user[0].isAdmin ,username : user[0].username }])      
+       const res = await updateEmail(uid,dataEmail);
+       if (res){
+        setUser([{email : emailUser ,idUser : uid,isAdmin : user[0].isAdmin ,username : user[0].username }])
+       }else{
+        errLog.innerHTML = "Email déjà utilisé";
+        errLog.style.color ="red"
+        errLog.style.textAlign="center"
+       }
+              
       }
     } else {
       ErreurChampObligatoire();

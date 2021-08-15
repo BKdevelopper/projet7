@@ -18,42 +18,45 @@ exports.signup = async function (req, res) {
     "password": encryptedPassword
   }
   try {
-  if (!isValidatePassword) {
-    res.status(400).json({ error : "Format de mot de passe non valide" });
-  }
-  else if(!isValidateEmail) {
-    res.status(400).json({ error : "Format de mail non valide" });
-  }else {
-    if(email && password && username){
-      conn.query('INSERT INTO users SET ?', users, function (error, results, fields) {
-        if (error) {
-          res.status(400).json(error)
-        } else {
-          conn.query('SELECT idUser FROM users WHERE email= ?', email, function (error, results, fields) {
-            if (error) {
-              res.send({
-                "code": 400,
-                "failed": "error ocurred..."
-              })
-            } else {
-              res.status(200).send({
-                id: results[0].idUser
-              });
-            }
-  
-          })
-        }
-  
-      });
-  
-    } else{
-      const errors = "Champs manquant";
+    if (!isValidatePassword) {
       res.status(400).json({
-        errors
+        error: "Format de mot de passe non valide"
       });
+    } else if (!isValidateEmail) {
+      res.status(400).json({
+        error: "Format de mail non valide"
+      });
+    } else {
+      if (email && password && username) {
+        conn.query('INSERT INTO users SET ?', users, function (error, results, fields) {
+          if (error) {
+            res.status(400).json(error)
+          } else {
+            conn.query('SELECT idUser FROM users WHERE email= ?', email, function (error, results, fields) {
+              if (error) {
+                res.send({
+                  "code": 400,
+                  "failed": "error ocurred..."
+                })
+              } else {
+                res.status(200).send({
+                  id: results[0].idUser
+                });
+              }
+
+            })
+          }
+
+        });
+
+      } else {
+        const errors = "Champs manquant";
+        res.status(400).json({
+          errors
+        });
+      }
     }
-  }
-  
+
   } catch (err) {
     console.log(err)
   }
@@ -95,36 +98,47 @@ exports.login = (req, res) => {
   if (user && pass) {
     conn.query('SELECT * FROM users WHERE username= ?', user,
       function (_error, results, _fields) {
-        var passwordIsValid = bcrypt.compareSync(
-          req.body.password,
-          results[0].password
-        );
+        if (results.length > 0) {
+          var passwordIsValid = bcrypt.compareSync(
+            req.body.password,
+            results[0].password
+          );
+          
+          if (!passwordIsValid) {
+            return res.status(401).send({
+              accessToken: null,
+              message: "Invalid Password!"
+            });
+          }
+          let Admin = results[0].isAdmin;
+          let role = ''
+          if (Admin === 1) {
+            role = 'admin'
+          } else {
+            role = 'member'
+          }
 
-        if (!passwordIsValid) {
-          return res.status(401).send({
-            accessToken: null,
-            message: "Invalid Password!"
-          });
-        }
-        let Admin = results[0].isAdmin;
-        let role = ''
-        if (Admin === 1) {
-          role = 'admin'
+          res.status(200).json({
+            id: results[0].idUser,
+            username: results[0].username,
+            email: results[0].email,
+            roles: role,
+            accessToken: jwt.sign({
+                id: results[0].idUser
+              },
+              process.env.SECRET_KEY, {
+                expiresIn: '24h'
+              }
+            )
+          })
+
         } else {
-          role = 'member'
+          res
+            .status(401)
+            .json({
+              message: 'Utilisateur ou mot de passe inconnu'
+            })
         }
-        
-        res.status(200).json({
-          id: results[0].idUser,
-          username: results[0].username,
-          email: results[0].email,
-          roles: role,
-          accessToken: jwt.sign(
-            { id: results[0].idUser },
-            process.env.SECRET_KEY,
-            { expiresIn: '24h' }
-        )
-      })
 
       })
   } else {
@@ -163,4 +177,3 @@ exports.updateEmail = (req, res, next) => {
     }
   )
 }
-

@@ -17,9 +17,7 @@ import {
 import { getItem } from "../../services/LocalStorage";
 const Posts = (props) => {
   const uid = useContext(UidContext);
-  const [message, setMessage] = useState("");
-  // const [idPost, setIdPost] = useState("");
-  // const [commentaire, setCommentaire] = useState("");
+  const [message, setMessage] = useState("");  
   const [people, setPeople] = useState([]);
   const [comment, setComment] = useState([]);
   const [file, setFile] = useState("");
@@ -27,7 +25,7 @@ const Posts = (props) => {
 
 
   const handleComment = async (idPost, commentaire) => {
-    //e.preventDefault();
+   
     if (commentaire && user[0]) {
       const idcomment = await createComment(commentaire, idPost, uid);
       setComment((prevComment) => [
@@ -105,7 +103,7 @@ const Posts = (props) => {
   };
 
   useEffect(() => {
-   console.log({uid})
+   
    if(uid){
     async function fetchData() {
       const reqUser = await axios.get(
@@ -116,7 +114,7 @@ const Posts = (props) => {
           },
         }
       );
-      console.log(reqUser.data.results)
+      
       setUser(reqUser.data.results);
       const reqPost = await axios.get(
         `${process.env.REACT_APP_URL}/api/post/getAllPost`,
@@ -228,25 +226,6 @@ const Posts = (props) => {
               ) : null
               )}
           </div>
-          {/* <form className="formulaire" onSubmit={handleComment} >
-            <div
-              className="container-post_commentaire"
-              onChange={(e) => setIdPost(person.idPost)}>
-              <textarea
-                type="text"
-                className="container-post_commentaire_text"
-                id={person.idPost}
-                placeholder="Votre message"
-                onChange={(e) => setCommentaire(e.target.value)}
-                value={commentaire}
-              />
-              <input
-                type="submit"
-                className="container-post_commentaire_btn"
-                value="Envoyer"
-              />
-            </div>
-          </form> */}
           <Comment onComment={commentaire => handleComment(person.idPost, commentaire)}/>
           <div className="container-post_comment">
             {comment.map((personComment) =>

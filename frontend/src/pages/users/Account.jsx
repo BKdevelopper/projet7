@@ -25,7 +25,7 @@ const Account = (props) => {
   }, [uid]);
 
   const handleUpdateEmail = async () => {
-    if (emailUser) {
+    if (emailUser && user[0]) {
       if (ErreurEmail(emailUser)) {
         const dataEmail = {
           email: emailUser,
